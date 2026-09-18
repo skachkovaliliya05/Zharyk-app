@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zharyk — Find your opportunity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lilac:#DCCFF5; --lemon:#F7EFA5; --bg:#FCFAFF; --text:#393341;
+  --card:#FFFFFF; --border:#ECE5F7; --muted:#7A7188; --accent:#B79CE8;
+  --accent-dark:#8F6FD6; --success:#8FCB9B; --danger:#E8A0A0; --warn:#F0C674;
+  --shadow: 0 8px 24px rgba(150,120,200,0.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#221F2A; --text:#F1ECFA; --card:#2C2836; --border:#3B3648; --muted:#B4ABC4;
+    --lilac:#4B3E6B; --lemon:#8C8352; --accent:#B79CE8; --accent-dark:#C9B4F2;
+    --shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#221F2A; --text:#F1ECFA; --card:#2C2836; --border:#3B3648; --muted:#B4ABC4;
+  --lilac:#4B3E6B; --lemon:#8C8352; --accent:#B79CE8; --accent-dark:#C9B4F2;
+  --shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;transition:background .2s;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+.topbar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);backdrop-filter:blur(6px);}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;max-width:1080px;margin:0 auto;gap:12px;flex-wrap:wrap;}
+.logo{font-weight:800;font-size:22px;display:flex;align-items:center;gap:8px;}
+.logo span.dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--lemon),var(--accent));display:inline-block;}
+nav.mainnav{display:flex;gap:4px;flex-wrap:wrap;}
+nav.mainnav button{background:none;border:none;padding:8px 12px;border-radius:12px;font-weight:600;font-size:14px;color:var(--muted);}
+nav.mainnav button.active{background:var(--lilac);color:var(--text);}
+nav.mainnav button:hover{background:var(--border);}
+.topright{display:flex;align-items:center;gap:8px;}
+.langtoggle{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden;}
+.langtoggle button{border:none;background:var(--card);padding:6px 12px;font-size:13px;font-weight:700;color:var(--muted);}
+.langtoggle button.active{background:var(--accent);color:#fff;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:14px;border:none;font-weight:700;font-size:14px;transition:transform .1s, box-shadow .1s;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 6px 18px rgba(143,111,214,.35);}
+.btn-primary:hover{box-shadow:0 8px 22px rgba(143,111,214,.5);}
+.btn-lemon{background:var(--lemon);color:#393341;}
+.btn-outline{background:transparent;border:1.5px solid var(--accent);color:var(--accent-dark);}
+.btn-ghost{background:var(--border);color:var(--text);}
+.btn-sm{padding:6px 12px;font-size:13px;border-radius:10px;}
+.btn-danger{background:var(--danger);color:#5a1f1f;}
+.btn-success{background:var(--success);color:#1f4a28;}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--lilac);color:var(--text);}
+.pill-lemon{background:var(--lemon);}
+.pill-muted{background:var(--border);color:var(--muted);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);}
+.section{padding:36px 0;}
+.hero{background:linear-gradient(160deg,var(--lilac) 0%, var(--bg) 70%);border-radius:0 0 40px 40px;padding:56px 0 44px;}
+.hero h1{font-size:38px;line-height:1.15;margin:0 0 14px;font-weight:800;}
+.hero p{color:var(--muted);font-size:17px;max-width:600px;}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;}
+@media(max-width:800px){.steps{grid-template-columns:1fr 1fr;} .hero h1{font-size:28px;}}
+.step-card{padding:20px;text-align:center;}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--lemon);display:flex;align-items:center;justify-content:center;font-weight:800;margin:0 auto 10px;}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;margin-top:20px;}
+.opp-card{padding:18px;display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s;}
+.opp-card:hover{transform:translateY(-3px);}
+.opp-title{font-weight:800;font-size:16px;line-height:1.3;}
+.opp-meta{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--muted);}
+.opp-badges{display:flex;flex-wrap:wrap;gap:6px;}
+.save-btn{position:absolute;top:14px;right:14px;background:var(--bg);border:1px solid var(--border);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.save-btn.saved{background:var(--lemon);}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
+select,input[type=text],input[type=search],input[type=date],input[type=email],input[type=password],textarea{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;
+}
+textarea{width:100%;resize:vertical;}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.field label{font-size:13px;font-weight:700;color:var(--muted);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:700px){.form-grid{grid-template-columns:1fr;}}
+.page-title{font-size:26px;font-weight:800;margin:0 0 4px;}
+.page-sub{color:var(--muted);margin:0 0 8px;}
+.tabbar{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+.tabbar button{background:none;border:none;padding:10px 14px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;}
+.tabbar button.active{color:var(--accent-dark);border-bottom:2px solid var(--accent-dark);}
+.modal-bg{position:fixed;inset:0;background:rgba(30,20,50,.35);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;}
+.modal{background:var(--card);border-radius:22px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:26px;box-shadow:var(--shadow);}
+.modal h2{margin-top:0;}
+.close-x{position:absolute;top:16px;right:16px;background:var(--border);border:none;border-radius:50%;width:30px;height:30px;}
+.progressbar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;margin:14px 0;}
+.progressbar-fill{height:100%;background:linear-gradient(90deg,var(--lemon),var(--accent));}
+.match-card{padding:20px;display:flex;flex-direction:column;gap:8px;}
+.match-pct{font-size:28px;font-weight:800;color:var(--accent-dark);}
+.mentor-card{padding:18px;text-align:center;}
+.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--lilac),var(--lemon));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;margin:0 auto 10px;}
+.glossary-term{padding:16px;margin-bottom:10px;}
+.glossary-term h4{margin:0 0 4px;}
+.glossary-term p{margin:2px 0;color:var(--muted);font-size:14px;}
+.deadline-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);}
+.deadline-row:last-child{border-bottom:none;}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+.status-tag{padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+.status-pending{background:var(--warn);color:#5a4300;}
+.status-approved{background:var(--success);color:#1f4a28;}
+.status-rejected{background:var(--danger);color:#5a1f1f;}
+.status-Saved{background:var(--border);}
+.status-Preparing{background:var(--lemon);}
+.status-Applied{background:var(--lilac);}
+.status-Accepted{background:var(--success);color:#1f4a28;}
+.status-Rejected{background:var(--danger);color:#5a1f1f;}
+.footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px;}
+@media(max-width:600px){.stat-grid{grid-template-columns:1fr;}}
+.stat-box{padding:22px;text-align:center;}
+.stat-num{font-size:30px;font-weight:800;color:var(--accent-dark);}
+.proto-badge{display:inline-block;margin-top:10px;background:var(--warn);color:#5a4300;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;}
+.linktabs{display:flex;gap:8px;margin-bottom:16px;}
+.linktabs button{flex:1;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:var(--card);font-weight:700;}
+.linktabs button.active{border-color:var(--accent);background:var(--lilac);}
+.helper-text{font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:10px;}
+.center{display:flex;align-items:center;justify-content:center;}
+.loading-dots::after{content:'...';}
+table.admin-table{width:100%;border-collapse:collapse;font-size:13px;}
+table.admin-table th, table.admin-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+.reqbox{white-space:pre-wrap;font-size:13px;color:var(--muted);}
+.scroll-x{overflow-x:auto;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 20px;border-radius:14px;font-size:14px;font-weight:600;z-index:300;box-shadow:var(--shadow);}
+.mini{font-size:12px;color:var(--muted);}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast-holder"></div>
+
+<script>
+/* ========================= DATA ========================= */
+const CATEGORIES = ["scholarships","competitions","summer_programs","exchanges","volunteering","entrepreneurship","technology"];
+const FORMATS = ["online","offline","hybrid"];
+const GRADES = ["8","9","10","11"];
+const ENGLISH_LEVELS = ["none","beginner","intermediate","advanced"];
+
+const I18N = {
+ru: {
+  app_name:"Zharyk",
+  nav_home:"Главная", nav_explore:"Explore", nav_match:"Подбор", nav_mentors:"Наставники",
+  nav_glossary:"Словарь", nav_calendar:"Календарь", nav_myzharyk:"Мой Zharyk", nav_temirtau:"Zharyk Temirtau", nav_admin:"Админ",
+  login:"Войти", logout:"Выйти", register:"Регистрация",
+  hero_title:"Find your opportunity. Find your people. Light up your future.",
+  hero_sub:"Zharyk помогает подросткам из небольших городов Казахстана находить стипендии, конкурсы, программы и наставников.",
+  find_opportunities:"Найти возможности", find_mentor:"Найти наставника",
+  step_find:"Find", step_understand:"Understand", step_connect:"Connect", step_apply:"Apply",
+  step_find_d:"Находи стипендии, конкурсы и программы", step_understand_d:"Изучай термины и требования в Словаре",
+  step_connect_d:"Общайся с наставниками", step_apply_d:"Подавай заявки и отслеживай прогресс",
+  temirtau_block_title:"Zharyk Temirtau", temirtau_block_d:"Первый пилотный город программы Zharyk.",
+  explore_title:"Explore", explore_sub:"Каталог возможностей для тебя",
+  search_placeholder:"Поиск...", filter_grade:"Класс", filter_category:"Категория", filter_cost:"Стоимость", filter_format:"Формат",
+  all:"Все", free:"Бесплатно", paid:"Платно", partial:"Частичная стипендия",
+  cat_scholarships:"Стипендии", cat_competitions:"Конкурсы", cat_summer_programs:"Летние программы",
+  cat_exchanges:"Обмены", cat_volunteering:"Волонтёрство", cat_entrepreneurship:"Предпринимательство", cat_technology:"Технологии",
+  fmt_online:"Онлайн", fmt_offline:"Офлайн", fmt_hybrid:"Гибрид",
+  deadline:"Дедлайн", grades_label:"Классы", format_label:"Формат", cost_label:"Стоимость",
+  add_opportunity:"Добавить возможность", add_manually:"Добавить вручную", add_by_link:"Добавить по ссылке",
+  save:"Сохранить", saved:"Сохранено", view_details:"Подробнее",
+  no_results:"Ничего не найдено. Попробуй изменить фильтры.",
+  opp_requirements:"Требования", opp_steps:"Шаги подачи заявки", opp_website:"Официальный сайт",
+  opp_location:"Локация", opp_organizer:"Организатор", opp_english:"Уровень английского",
+  view_glossary:"Смотреть словарь",
+  match_title:"Opportunity Match", match_sub:"Ответь на несколько вопросов — подберём подходящие возможности",
+  q_grade:"В каком ты классе?", q_interests:"Какие категории тебе интересны?", q_english:"Твой уровень английского?",
+  q_type:"Какой формат возможности предпочитаешь?", q_budget:"Какой у тебя бюджет?",
+  get_matches:"Показать подходящие варианты", match_result_title:"Твои варианты",
+  budget_free:"Только бесплатное", budget_low:"До 50 000 тг", budget_any:"Бюджет не важен",
+  match_pct:"Совпадение", why_match:"Почему подходит",
+  mentors_title:"Наставники", mentors_sub:"Найди наставника, который поможет тебе",
+  expertise_label:"Экспертиза", request_mentorship:"Запросить наставничество",
+  request_sent:"Запрос отправлен!", your_message:"Твоё сообщение",
+  send_request:"Отправить запрос",
+  glossary_title:"Словарь терминов", glossary_sub:"Понятные объяснения сложных слов",
+  example_label:"Пример",
+  calendar_title:"Календарь дедлайнов", calendar_sub:"Ближайшие дедлайны",
+  myzharyk_title:"Мой Zharyk",
+  tab_saved:"Сохранённые", tab_requests:"Запросы наставникам", tab_submissions:"Мои заявки", tab_tracker:"Трекер заявок",
+  tracker_status:"Статус", change_status:"Изменить статус",
+  status_Saved:"Сохранено", status_Preparing:"Готовлюсь", status_Applied:"Подал(а)", status_Accepted:"Принят(а)", status_Rejected:"Отказ",
+  status_pending:"На рассмотрении", status_approved:"Одобрено", status_rejected:"Отклонено",
+  no_saved:"Пока нет сохранённых возможностей.", no_requests:"Пока нет запросов наставникам.",
+  no_submissions:"Пока нет заявок на модерацию.", no_tracker:"Добавь возможность в трекер со страницы Explore.",
+  rejection_reason:"Причина отклонения",
+  temirtau_title:"Zharyk Temirtau", temirtau_desc:"Первый пилотный проект Zharyk запущен в городе Темиртау. Мы объединяем подростков, наставников и локальные образовательные возможности в одном месте.",
+  students_label:"Учеников", mentors_label:"Наставников", opportunities_label:"Возможностей",
+  prototype_data:"Прототип — демо-данные",
+  admin_title:"Admin Dashboard", admin_sub:"Модерация заявок",
+  pending:"На рассмотрении", approved:"Одобрено", rejected:"Отклонено", total:"Всего",
+  approve:"Одобрить", reject:"Отклонить", reason_placeholder:"Укажи причину отклонения...",
+  source_link:"Исходная ссылка", submitted_by:"Отправил(а)",
+  extract_info:"Extract information", link_input:"Ссылка на страницу", pasted_text:"Текст страницы (скопируй и вставь)",
+  extract_fail:"We couldn't extract the information. You can add it manually.",
+  extracting:"Извлекаем информацию", review_edit:"Проверь и отредактируй данные перед отправкой",
+  submit_for_review:"Отправить на модерацию", title_label:"Название", description_label:"Описание",
+  category_label:"Категория", scholarship_label:"Стипендия доступна",
+  email:"Email", password:"Пароль", name_label:"Имя", role_label:"Роль",
+  login_title:"Вход в Zharyk", register_title:"Регистрация в Zharyk",
+  no_account:"Нет аккаунта?", have_account:"Уже есть аккаунт?",
+  login_required:"Войди, чтобы продолжить.",
+  admin_only:"Доступно только администратору.",
+  demo_note:"Демо-режим: данные общие для всех, кто открывает это приложение.",
+  demo_admin_hint:"Демо-админ: admin@zharyk.kz / admin123",
+  yes:"Да", no:"Нет", close:"Закрыть", cancel:"Отмена", submit:"Отправить", edit:"Редактировать",
+  invalid_login:"Неверный email или пароль.", email_taken:"Этот email уже зарегистрирован.",
+  fill_required:"Заполни обязательные поля.",
+  applied_to_tracker:"Добавлено в трекер",
+  glossary_terms: {
+    pitch:["Питч","Короткая презентация идеи или проекта.","Пример: «На конкурсе у тебя будет 3 минуты на питч своего проекта.»"],
+    deadline:["Дедлайн","Крайний срок подачи заявки.","Пример: «Дедлайн подачи документов — 30 ноября.»"],
+    scholarship:["Стипендия","Финансовая поддержка на обучение, которую не нужно возвращать.","Пример: «Она получила стипендию на летнюю школу.»"],
+    extracurriculars:["Внеучебная деятельность","Активности вне школьной программы: кружки, спорт, волонтёрство.","Пример: «Внеучебная деятельность важна для поступления в вуз.»"],
+    transcript:["Транскрипт","Официальный документ с твоими оценками за все годы обучения.","Пример: «Приложи транскрипт оценок к заявке.»"],
+    gpa:["GPA","Средний балл успеваемости.","Пример: «Для программы нужен GPA не ниже 4.0.»"],
+    motivation_letter:["Мотивационное письмо","Текст, где ты объясняешь, почему хочешь участвовать в программе.","Пример: «Напиши мотивационное письмо на 300 слов.»"],
+    personal_statement:["Personal Statement","Эссе о себе, своём опыте и целях.","Пример: «Personal statement — твой шанс рассказать свою историю.»"],
+    fellowship:["Fellowship","Программа поддержки с финансированием и менторством, часто для исследований или проектов.","Пример: «Он получил fellowship для работы над проектом.»"],
+    internship:["Стажировка","Временная работа для получения практического опыта.","Пример: «Летняя стажировка в IT-компании.»"],
+    portfolio:["Портфолио","Подборка твоих лучших работ или проектов.","Пример: «Приложи портфолио дизайн-проектов.»"],
+    tuition:["Плата за обучение","Сумма, которую нужно заплатить за обучение.","Пример: «Стипендия покрывает полную плату за обучение.»"],
+    financial_aid:["Финансовая помощь","Поддержка (гранты, стипендии, кредиты) для оплаты обучения.","Пример: «Подай заявку на финансовую помощь заранее.»"],
+    full_ride:["Full Ride","Стипендия, покрывающая абсолютно все расходы на обучение.","Пример: «Он выиграл full ride в университет.»"],
+    application:["Заявка","Комплект документов для участия в программе или поступления.","Пример: «Заполни заявку до дедлайна.»"]
+  }
+},
+kz: {
+  app_name:"Zharyk",
+  nav_home:"Басты бет", nav_explore:"Explore", nav_match:"Таңдау", nav_mentors:"Тәлімгерлер",
+  nav_glossary:"Сөздік", nav_calendar:"Күнтізбе", nav_myzharyk:"Менің Zharyk-ым", nav_temirtau:"Zharyk Теміртау", nav_admin:"Админ",
+  login:"Кіру", logout:"Шығу", register:"Тіркелу",
+  hero_title:"Find your opportunity. Find your people. Light up your future.",
+  hero_sub:"Zharyk Қазақстанның шағын қалаларындағы жасөспірімдерге стипендиялар, конкурстар, бағдарламалар және тәлімгерлер табуға көмектеседі.",
+  find_opportunities:"Мүмкіндіктерді табу", find_mentor:"Тәлімгер табу",
+  step_find:"Find", step_understand:"Understand", step_connect:"Connect", step_apply:"Apply",
+  step_find_d:"Стипендиялар мен конкурстарды тап", step_understand_d:"Терминдерді Сөздіктен үйрен",
+  step_connect_d:"Тәлімгерлермен байланыс", step_apply_d:"Өтінім бер және прогресті бақыла",
+  temirtau_block_title:"Zharyk Теміртау", temirtau_block_d:"Zharyk бағдарламасының алғашқы пилоттық қаласы.",
+  explore_title:"Explore", explore_sub:"Сен үшін мүмкіндіктер каталогы",
+  search_placeholder:"Іздеу...", filter_grade:"Сынып", filter_category:"Санат", filter_cost:"Құны", filter_format:"Формат",
+  all:"Барлығы", free:"Тегін", paid:"Ақылы", partial:"Ішінара стипендия",
+  cat_scholarships:"Стипендиялар", cat_competitions:"Конкурстар", cat_summer_programs:"Жазғы бағдарламалар",
+  cat_exchanges:"Алмасулар", cat_volunteering:"Волонтёрлық", cat_entrepreneurship:"Кәсіпкерлік", cat_technology:"Технология",
+  fmt_online:"Онлайн", fmt_offline:"Офлайн", fmt_hybrid:"Гибрид",
+  deadline:"Мерзім", grades_label:"Сыныптар", format_label:"Формат", cost_label:"Құны",
+  add_opportunity:"Мүмкіндік қосу", add_manually:"Қолмен қосу", add_by_link:"Сілтеме арқылы қосу",
+  save:"Сақтау", saved:"Сақталды", view_details:"Толығырақ",
+  no_results:"Ештеңе табылмады. Сүзгілерді өзгертіп көр.",
+  opp_requirements:"Талаптар", opp_steps:"Өтінім беру қадамдары", opp_website:"Ресми сайт",
+  opp_location:"Орналасқан жері", opp_organizer:"Ұйымдастырушы", opp_english:"Ағылшын тілі деңгейі",
+  view_glossary:"Сөздікті қарау",
+  match_title:"Opportunity Match", match_sub:"Бірнеше сұраққа жауап бер — саған сай мүмкіндіктерді табамыз",
+  q_grade:"Қай сыныпта оқисың?", q_interests:"Қай санаттар қызықтырады?", q_english:"Ағылшын тілі деңгейің?",
+  q_type:"Қандай форматты қалайсың?", q_budget:"Бюджетің қандай?",
+  get_matches:"Сәйкес нұсқаларды көрсету", match_result_title:"Саған сай нұсқалар",
+  budget_free:"Тек тегін", budget_low:"50 000 теңгеге дейін", budget_any:"Бюджет маңызды емес",
+  match_pct:"Сәйкестік", why_match:"Неге сай келеді",
+  mentors_title:"Тәлімгерлер", mentors_sub:"Саған көмектесетін тәлімгерді тап",
+  expertise_label:"Сала", request_mentorship:"Тәлімгерлік сұрау",
+  request_sent:"Сұраныс жіберілді!", your_message:"Хабарламаң",
+  send_request:"Сұраныс жіберу",
+  glossary_title:"Терминдер сөздігі", glossary_sub:"Күрделі сөздердің түсінікті түсіндірмесі",
+  example_label:"Мысал",
+  calendar_title:"Мерзімдер күнтізбесі", calendar_sub:"Жақын арадағы мерзімдер",
+  myzharyk_title:"Менің Zharyk-ым",
+  tab_saved:"Сақталғандар", tab_requests:"Тәлімгерлерге сұраныстар", tab_submissions:"Менің өтінімдерім", tab_tracker:"Өтінім трекері",
+  tracker_status:"Статус", change_status:"Статусты өзгерту",
+  status_Saved:"Сақталды", status_Preparing:"Дайындалып жатырмын", status_Applied:"Өтінім берілді", status_Accepted:"Қабылданды", status_Rejected:"Бас тартылды",
+  status_pending:"Қаралуда", status_approved:"Мақұлданды", status_rejected:"Қабылданбады",
+  no_saved:"Әзірше сақталған мүмкіндік жоқ.", no_requests:"Әзірше тәлімгерлерге сұраныс жоқ.",
+  no_submissions:"Әзірше модерацияға жіберілген өтінім жоқ.", no_tracker:"Explore бетінен мүмкіндікті трекерге қос.",
+  rejection_reason:"Бас тарту себебі",
+  temirtau_title:"Zharyk Теміртау", temirtau_desc:"Zharyk-тың алғашқы пилоттық жобасы Теміртау қаласында іске қосылды. Біз жасөспірімдерді, тәлімгерлерді және жергілікті білім беру мүмкіндіктерін бір жерге жинаймыз.",
+  students_label:"Оқушылар", mentors_label:"Тәлімгерлер", opportunities_label:"Мүмкіндіктер",
+  prototype_data:"Прототип — демо деректер",
+  admin_title:"Admin Dashboard", admin_sub:"Өтінімдерді модерациялау",
+  pending:"Қаралуда", approved:"Мақұлданды", rejected:"Қабылданбады", total:"Барлығы",
+  approve:"Мақұлдау", reject:"Қабылдамау", reason_placeholder:"Бас тарту себебін көрсет...",
+  source_link:"Дереккөз сілтемесі", submitted_by:"Жіберген",
+  extract_info:"Extract information", link_input:"Бет сілтемесі", pasted_text:"Бет мәтіні (көшіріп қой)",
+  extract_fail:"We couldn't extract the information. You can add it manually.",
+  extracting:"Ақпарат алынуда", review_edit:"Жіберер алдында деректерді тексеріп, түзет",
+  submit_for_review:"Модерацияға жіберу", title_label:"Атауы", description_label:"Сипаттамасы",
+  category_label:"Санат", scholarship_label:"Стипендия бар",
+  email:"Email", password:"Құпия сөз", name_label:"Аты", role_label:"Рөл",
+  login_title:"Zharyk-қа кіру", register_title:"Zharyk-та тіркелу",
+  no_account:"Аккаунт жоқ па?", have_account:"Аккаунт бар ма?",
+  login_required:"Жалғастыру үшін кіріңіз.",
+  admin_only:"Тек әкімші үшін қолжетімді.",
+  demo_note:"Демо режим: деректер осы қосымшаны ашатын барлық адамдарға ортақ.",
+  demo_admin_hint:"Демо-админ: admin@zharyk.kz / admin123",
+  yes:"Иә", no:"Жоқ", close:"Жабу", cancel:"Бас тарту", submit:"Жіберу", edit:"Өңдеу",
+  invalid_login:"Email немесе құпия сөз қате.", email_taken:"Бұл email тіркелген.",
+  fill_required:"Міндетті өрістерді толтыр.",
+  applied_to_tracker:"Трекерге қосылды",
+  glossary_terms: {
+    pitch:["Питч","Идея немесе жоба туралы қысқа презентация.","Мысалы: «Конкурста жобаңды питчтеуге 3 минут бересің.»"],
+    deadline:["Мерзім","Өтінім берудің соңғы мерзімі.","Мысалы: «Құжаттарды тапсыру мерзімі — 30 қараша.»"],
+    scholarship:["Стипендия","Оқуға арналған, қайтарылмайтын қаржылық қолдау.","Мысалы: «Ол жазғы мектепке стипендия алды.»"],
+    extracurriculars:["Сыныптан тыс іс-әрекет","Мектеп бағдарламасынан тыс белсенділік: үйірмелер, спорт, волонтёрлық.","Мысалы: «Жоғары оқу орнына түсу үшін сыныптан тыс іс-әрекет маңызды.»"],
+    transcript:["Транскрипт","Барлық оқу жылдарындағы бағаларың көрсетілген құжат.","Мысалы: «Өтінімге баға транскриптін қоса тапсыр.»"],
+    gpa:["GPA","Орташа үлгерім балы.","Мысалы: «Бағдарламаға GPA кемінде 4.0 керек.»"],
+    motivation_letter:["Мотивациялық хат","Бағдарламаға неге қатысқың келетінін түсіндіретін мәтін.","Мысалы: «300 сөзден тұратын мотивациялық хат жаз.»"],
+    personal_statement:["Personal Statement","Өзің, тәжірибең және мақсаттарың туралы эссе.","Мысалы: «Personal statement — өз тарихыңды айту мүмкіндігі.»"],
+    fellowship:["Fellowship","Қаржыландыру мен тәлімгерлікпен қолдау бағдарламасы.","Мысалы: «Ол жоба үстінде жұмыс істеу үшін fellowship алды.»"],
+    internship:["Тағылымдама","Практикалық тәжірибе алу үшін уақытша жұмыс.","Мысалы: «IT-компаниядағы жазғы тағылымдама.»"],
+    portfolio:["Портфолио","Ең үздік жұмыстарыңның жинағы.","Мысалы: «Дизайн жобаларының портфолиосын қоса тапсыр.»"],
+    tuition:["Оқу ақысы","Оқу үшін төленетін сома.","Мысалы: «Стипендия оқу ақысын толық жабады.»"],
+    financial_aid:["Қаржылық көмек","Оқуды төлеуге арналған гранттар, стипендиялар, несиелер.","Мысалы: «Қаржылық көмекке алдын ала өтінім бер.»"],
+    full_ride:["Full Ride","Оқудың барлық шығынын толық жабатын стипендия.","Мысалы: «Ол университетке full ride жеңіп алды.»"],
+    application:["Өтінім","Бағдарламаға қатысу немесе түсу үшін құжаттар жиынтығы.","Мысалы: «Мерзімге дейін өтінімді толтыр.»"]
+  }
+}
+};
+let LANG = 'ru';
+function t(key){ const v = I18N[LANG][key]; return v===undefined ? key : v; }
+
+function seedOpportunities(){
+  const mk = (o)=>Object.assign({
+    id: 'op_'+Math.random().toString(36).slice(2,9),
+    status:'approved', sourceUrl:null, badges:[]
+  }, o);
+  return [
+    mk({title:"National Robotics Challenge KZ", category:"technology", deadline:"2026-11-15", grades:["9","10","11"], format:"offline", cost:"Free", location:"Астана", organizer:"KZ Robotics Assoc.", englishLevel:"none", description:"Республиканский конкурс робототехники для школьников. Командная разработка и презентация проектов.", requirements:"Команда 2-4 человека, базовые навыки программирования.", steps:["Регистрация команды","Подготовка прототипа","Отборочный этап онлайн","Финал в Астане"], website:"https://example.org/robotics-kz", badges:["Популярное"]}),
+    mk({title:"Zhastar Coding Bootcamp", category:"technology", deadline:"2026-10-05", grades:["8","9","10","11"], format:"online", cost:"Free", location:"Онлайн", organizer:"CodeKZ Foundation", englishLevel:"beginner", description:"4-недельный интенсив по веб-разработке для начинающих.", requirements:"Ноутбук, базовый английский.", steps:["Заполнить форму","Тест на логику","Начало курса"], website:"https://example.org/coding-bootcamp"}),
+    mk({title:"Temirtau Youth Science Fair", category:"competitions", deadline:"2026-12-01", grades:["8","9","10"], format:"offline", cost:"Free", location:"Темиртау", organizer:"Zharyk Temirtau", englishLevel:"none", description:"Городская научная выставка проектов школьников Темиртау.", requirements:"Индивидуальный или групповой проект.", steps:["Подать заявку","Подготовить стенд","Презентация жюри"], website:"https://example.org/science-fair", badges:["Темиртау"]}),
+    mk({title:"Silk Road Debate Championship", category:"competitions", deadline:"2026-11-20", grades:["10","11"], format:"hybrid", cost:"Free", location:"Алматы / Онлайн", organizer:"Central Asia Debate", englishLevel:"intermediate", description:"Дебатный турнир на английском языке для старшеклассников региона.", requirements:"Опыт публичных выступлений приветствуется.", steps:["Регистрация","Отборочные раунды онлайн","Финал в Алматы"], website:"https://example.org/debate"}),
+    mk({title:"Bolashak Junior Summer School", category:"summer_programs", deadline:"2027-02-01", grades:["9","10","11"], format:"offline", cost:"Partial", location:"Нур-Султан", organizer:"Junior Talent Fund", englishLevel:"intermediate", description:"Летняя школа лидерства и академической подготовки.", requirements:"Средний балл не ниже 4.0, мотивационное письмо.", steps:["Анкета","Эссе","Собеседование"], website:"https://example.org/summer-school"}),
+    mk({title:"Green Steppe Volunteer Camp", category:"volunteering", deadline:"2026-10-25", grades:["8","9","10","11"], format:"offline", cost:"Free", location:"Карагандинская обл.", organizer:"EcoKZ", englishLevel:"none", description:"Волонтёрский лагерь по озеленению и экологическому просвещению.", requirements:"Желание помогать, согласие родителей.", steps:["Регистрация","Инструктаж","Участие в лагере"], website:"https://example.org/green-camp", badges:["Темиртау"]}),
+    mk({title:"Young Entrepreneurs Pitch Lab", category:"entrepreneurship", deadline:"2026-11-30", grades:["9","10","11"], format:"hybrid", cost:"Free", location:"Караганда", organizer:"StartUp KZ Youth", englishLevel:"beginner", description:"Программа по созданию и питчингу своего первого бизнес-проекта.", requirements:"Идея проекта (можно черновую).", steps:["Подача идеи","Менторские сессии","Питч-день"], website:"https://example.org/pitch-lab"}),
+    mk({title:"US-KZ High School Exchange", category:"exchanges", deadline:"2027-01-15", grades:["9","10"], format:"offline", cost:"Free", location:"США", organizer:"FLEX Program", englishLevel:"advanced", description:"Годовая программа обмена для школьников с полным покрытием расходов.", requirements:"Высокий уровень английского, эссе, тестирование.", steps:["Онлайн-регистрация","Тест по английскому","Эссе","Интервью"], website:"https://example.org/exchange", badges:["Full Ride"]}),
+    mk({title:"AI for Teens Summer Camp", category:"technology", deadline:"2026-12-10", grades:["9","10","11"], format:"offline", cost:"Paid", location:"Алматы", organizer:"AI School KZ", englishLevel:"intermediate", description:"Летний лагерь по основам искусственного интеллекта и машинного обучения.", requirements:"Базовые знания программирования желательны.", steps:["Заявка","Оплата","Подтверждение места"], website:"https://example.org/ai-camp"}),
+    mk({title:"Kazakhstan Math Olympiad — Regional Round", category:"competitions", deadline:"2026-10-18", grades:["8","9","10","11"], format:"offline", cost:"Free", location:"Карагандинская обл.", organizer:"Республиканский центр одарённых детей", englishLevel:"none", description:"Региональный этап республиканской олимпиады по математике.", requirements:"Школьная регистрация через учителя математики.", steps:["Регистрация в школе","Региональный этап","Республиканский этап"], website:"https://example.org/math-olympiad"}),
+    mk({title:"Girls in Tech Mentorship Track", category:"technology", deadline:"2026-11-05", grades:["9","10","11"], format:"online", cost:"Free", location:"Онлайн", organizer:"Girls in Tech KZ", englishLevel:"beginner", description:"3-месячная менторская программа для девушек, интересующихся технологиями.", requirements:"Анкета, мотивационное письмо.", steps:["Анкета","Собеседование","Подбор ментора"], website:"https://example.org/girls-in-tech", badges:["Популярное"]}),
+    mk({title:"Temirtau Business Youth Club", category:"entrepreneurship", deadline:"2026-10-30", grades:["8","9","10","11"], format:"offline", cost:"Free", location:"Темиртау", organizer:"Zharyk Temirtau", englishLevel:"none", description:"Еженедельный клуб по основам предпринимательства для подростков Темиртау.", requirements:"Открыт для всех желающих.", steps:["Запись через форму","Первое занятие"], website:"https://example.org/temirtau-business", badges:["Темиртау"]}),
+    mk({title:"Central Asia Youth Journalism Fellowship", category:"exchanges", deadline:"2026-12-20", grades:["10","11"], format:"hybrid", cost:"Free", location:"Регион ЦА", organizer:"Open Media Youth", englishLevel:"advanced", description:"Fellowship для молодых журналистов с публикациями и менторством.", requirements:"Портфолио из 2-3 текстов, английский язык.", steps:["Портфолио","Тестовое задание","Интервью"], website:"https://example.org/journalism-fellowship"}),
+    mk({title:"National Chemistry Olympiad", category:"competitions", deadline:"2026-11-08", grades:["9","10","11"], format:"offline", cost:"Free", location:"Карагандинская обл.", organizer:"Республиканский центр одарённых детей", englishLevel:"none", description:"Региональный этап олимпиады по химии.", requirements:"Регистрация через школу.", steps:["Школьный этап","Региональный этап"], website:"https://example.org/chem-olympiad"}),
+    mk({title:"Zhas Talap Scholarship Fund", category:"scholarships", deadline:"2027-01-31", grades:["11"], format:"offline", cost:"Free", location:"По всему Казахстану", organizer:"Talap Foundation", englishLevel:"none", description:"Стипендия для поступления в отечественные вузы для одарённых детей из малых городов.", requirements:"GPA не ниже 4.2, справка о доходах семьи.", steps:["Заявка","Документы","Собеседование"], website:"https://example.org/talap-scholarship", badges:["Стипендия"]}),
+    mk({title:"Digital Design Summer Studio", category:"summer_programs", deadline:"2026-12-15", grades:["8","9","10","11"], format:"online", cost:"Paid", location:"Онлайн", organizer:"Creative Hub KZ", englishLevel:"beginner", description:"Летняя студия по графическому дизайну и созданию портфолио.", requirements:"Компьютер/планшет для рисования.", steps:["Оплата","Вводное занятие"], website:"https://example.org/design-studio"}),
+    mk({title:"Youth Leadership Forum Karaganda", category:"volunteering", deadline:"2026-11-12", grades:["9","10","11"], format:"offline", cost:"Free", location:"Караганда", organizer:"Zharyk Regional Hub", englishLevel:"none", description:"Форум лидерства для подростков Карагандинской области.", requirements:"Рекомендация от школы или самостоятельная заявка.", steps:["Заявка","Отбор","Участие в форуме"], website:"https://example.org/leadership-forum"}),
+    mk({title:"Eurasia STEM Exchange Camp", category:"exchanges", deadline:"2027-02-10", grades:["10","11"], format:"offline", cost:"Partial", location:"Германия", organizer:"Eurasia STEM Alliance", englishLevel:"advanced", description:"Обменный STEM-лагерь с частичным покрытием расходов.", requirements:"Успеваемость по точным наукам, английский язык.", steps:["Анкета","Тест по английскому","Портфолио"], website:"https://example.org/stem-exchange"})
+  ];
+}
+
+function seedMentors(){
+  return [
+    {id:'m1', name:"Айгерим Сатпаева", expertise:["technology","cv"], bio_ru:"Software Engineer, помогает с резюме и подготовкой к техническим собеседованиям.", bio_kz:"Software Engineer, түйіндеме мен техникалық сұхбатқа дайындауға көмектеседі."},
+    {id:'m2', name:"Данияр Ахметов", expertise:["business","pitching"], bio_ru:"Основатель стартапа, консультирует по питчам и бизнес-идеям.", bio_kz:"Стартап негізін қалаушы, питч пен бизнес идеялар бойынша кеңес береді."},
+    {id:'m3', name:"Madina Yerlanova", expertise:["applications","projects"], bio_ru:"Координатор программ обмена, помогает с заявками и эссе.", bio_kz:"Алмасу бағдарламалары үйлестірушісі, өтінімдер мен эссеге көмектеседі."},
+    {id:'m4', name:"Ерлан Жумабеков", expertise:["leadership","projects"], bio_ru:"Тренер молодёжного лидерства, ведёт проектные команды.", bio_kz:"Жастар көшбасшылығы бойынша тренер, жоба командаларын жетекшілейді."},
+    {id:'m5', name:"Аружан Бекова", expertise:["technology","projects"], bio_ru:"Data Scientist, помогает с техническими и IT-проектами.", bio_kz:"Data Scientist, техникалық және IT жобаларына көмектеседі."},
+    {id:'m6', name:"Тимур Оспанов", expertise:["business","cv"], bio_ru:"HR-специалист, помогает с резюме и карьерными вопросами.", bio_kz:"HR маманы, түйіндеме мен мансап мәселелеріне көмектеседі."},
+    {id:'m7', name:"Дана Кенжебаева", expertise:["applications","pitching"], bio_ru:"Экс-участница международных программ, помогает готовить сильные заявки.", bio_kz:"Халықаралық бағдарламалардың бұрынғы қатысушысы, күшті өтінім дайындауға көмектеседі."},
+    {id:'m8', name:"Алишер Нурланов", expertise:["leadership","business"], bio_ru:"Руководитель НКО, менторит по лидерству и социальным проектам.", bio_kz:"ҮЕҰ басшысы, көшбасшылық пен әлеуметтік жобалар бойынша тәлімгерлік етеді."}
+  ];
+}
+
+const EXPERTISE_LABELS = {
+  ru:{projects:"Проекты", business:"Бизнес", technology:"Технологии", cv:"Резюме", applications:"Заявки", pitching:"Питчинг", leadership:"Лидерство"},
+  kz:{projects:"Жобалар", business:"Бизнес", technology:"Технология", cv:"Түйіндеме", applications:"Өтінімдер", pitching:"Питчинг", leadership:"Көшбасшылық"}
+};
+
+/* ========================= STATE / STORAGE ========================= */
+const DB_KEY = 'zharyk_db_v1';
+let DB = null;
+let SESSION_USER_ID = null;
+let route = {name:'home', params:{}};
+
+function uid(prefix){ return prefix+'_'+Math.random().toString(36).slice(2,10); }
+
+async function loadDB(){
+  try{
+    const r = await window.storage.get(DB_KEY, true);
+    if(r && r.value) return JSON.parse(r.value);
+  }catch(e){ /* not found or error */ }
+  return null;
+}
+async function saveDB(){
+  try{ await window.storage.set(DB_KEY, JSON.stringify(DB), true); }
+  catch(e){ console.error('save failed', e); showToast(LANG==='ru' ? 'Ошибка сохранения данных' : 'Деректерді сақтау қатесі'); }
+}
+
+function seedDB(){
+  const adminId = uid('u');
+  return {
+    users:{
+      [adminId]: {id:adminId, email:'admin@zharyk.kz', password:'admin123', role:'admin', name:'Admin', grade:null}
+    },
+    opportunities: seedOpportunities(),
+    submissions: [],
+    mentors: seedMentors(),
+    mentorRequests: [],
+    userData: {} // userId -> {saved:[oppId], tracker:{oppId:status}}
+  };
+}
+
+function ensureUserData(userId){
+  if(!DB.userData[userId]) DB.userData[userId] = {saved:[], tracker:{}};
+  return DB.userData[userId];
+}
+
+function getSession(){
+  try{ return localStorage.getItem('zharyk_session_user_id'); }catch(e){ return null; }
+}
+function setSession(id){
+  try{ if(id) localStorage.setItem('zharyk_session_user_id', id); else localStorage.removeItem('zharyk_session_user_id'); }catch(e){}
+  SESSION_USER_ID = id;
+}
+function currentUser(){
+  if(!SESSION_USER_ID) return null;
+  return DB.users[SESSION_USER_ID] || null;
+}
+
+/* ========================= TOAST ========================= */
+function showToast(msg){
+  const holder = document.getElementById('toast-holder');
+  const el = document.createElement('div');
+  el.className='toast'; el.textContent = msg;
+  holder.appendChild(el);
+  setTimeout(()=>{ el.remove(); }, 2600);
+}
+
+/* ========================= ROUTER ========================= */
+function parseHash(){
+  const h = location.hash.slice(1) || '/home';
+  const parts = h.split('/').filter(Boolean);
+  if(parts.length===0) return {name:'home', params:{}};
+  if(parts[0]==='opportunity' && parts[1]) return {name:'opportunity', params:{id:parts[1]}};
+  return {name:parts[0], params:{}};
+}
+window.addEventListener('hashchange', ()=>{ route = parseHash(); render(); window.scrollTo(0,0); });
+
+function go(name, params){
+  if(params && params.id) location.hash = '#/'+name+'/'+params.id;
+  else location.hash = '#/'+name;
+}
+
+/* ========================= AUTH MODAL ========================= */
+let authModal = null; // 'login' | 'register' | null
+let authError = '';
+
+function openAuth(mode){ authModal = mode; authError=''; renderModalLayer(); }
+function closeAuth(){ authModal = null; renderModalLayer(); }
+
+function doLogin(email, password){
+  const user = Object.values(DB.users).find(u=>u.email.toLowerCase()===email.trim().toLowerCase() && u.password===password);
+  if(!user){ authError = t('invalid_login'); renderModalLayer(); return; }
+  setSession(user.id);
+  closeAuth();
+  render();
+  showToast((LANG==='ru'?'Добро пожаловать, ':'Қош келдің, ')+user.name+'!');
+}
+function doRegister(name, email, password, grade){
+  if(!name || !email || !password){ authError = t('fill_required'); renderModalLayer(); return; }
+  const exists = Object.values(DB.users).find(u=>u.email.toLowerCase()===email.trim().toLowerCase());
+  if(exists){ authError = t('email_taken'); renderModalLayer(); return; }
+  const id = uid('u');
+  DB.users[id] = {id, email:email.trim(), password, role:'user', name, grade: grade||null};
+  ensureUserData(id);
+  setSession(id);
+  saveDB();
+  closeAuth();
+  render();
+  showToast((LANG==='ru'?'Аккаунт создан!':'Аккаунт жасалды!'));
+}
+function doLogout(){ setSession(null); go('home'); showToast(LANG==='ru'?'Ты вышел из аккаунта':'Аккаунттан шықтың'); }
+
+function requireAuth(){
+  if(!currentUser()){ openAuth('login'); return false; }
+  return true;
+}
+
+/* ========================= MODAL LAYER (auth + generic) ========================= */
+let genericModal = null; // {title, bodyHtml, onMount}
+function renderModalLayer(){
+  const holder = document.getElementById('modal-layer') || (()=>{ const d=document.createElement('div'); d.id='modal-layer'; document.getElementById('root').appendChild(d); return d;})();
+  if(authModal){
+    holder.innerHTML = authModalHtml();
+    bindAuthModalEvents();
+  } else if(genericModal){
+    holder.innerHTML = genericModalHtml();
+  } else {
+    holder.innerHTML = '';
+  }
+}
+function authModalHtml(){
+  const isLogin = authModal==='login';
+  return `<div class="modal-bg" data-close="auth"><div class="card modal" style="position:relative">
+    <button class="close-x" data-close="auth">✕</button>
+    <h2>${isLogin? t('login_title') : t('register_title')}</h2>
+    ${authError? `<p style="color:var(--danger);font-weight:700;font-size:13px;">${authError}</p>`:''}
+    <div class="field"><label>${t('email')}</label><input type="email" id="auth-email"></div>
+    ${!isLogin? `<div class="field"><label>${t('name_label')}</label><input type="text" id="auth-name"></div>
+    <div class="field"><label>${t('filter_grade')}</label><select id="auth-grade"><option value="">-</option>${GRADES.map(g=>`<option value="${g}">${g}</option>`).join('')}</select></div>`:''}
+    <div class="field"><label>${t('password')}</label><input type="password" id="auth-password"></div>
+    <button class="btn btn-primary" id="auth-submit" style="width:100%;justify-content:center;margin-top:6px;">${isLogin? t('login') : t('register')}</button>
+    <p class="mini" style="margin-top:14px;text-align:center;">
+      ${isLogin? t('no_account') : t('have_account')}
+      <a href="#" id="auth-switch" style="color:var(--accent-dark);font-weight:700;">${isLogin? t('register') : t('login')}</a>
+    </p>
+    ${isLogin? `<p class="mini" style="text-align:center;">${t('demo_admin_hint')}</p>`:''}
+  </div></div>`;
+}
+function bindAuthModalEvents(){
+  const holder = document.getElementById('modal-layer');
+  holder.querySelectorAll('[data-close="auth"]').forEach(el=>el.addEventListener('click',(e)=>{ if(e.target===el) closeAuth(); }));
+  const submit = document.getElementById('auth-submit');
+  if(submit) submit.addEventListener('click', ()=>{
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    if(authModal==='login') doLogin(email, password);
+    else{
+      const name = document.getElementById('auth-name').value;
+      const grade = document.getElementById('auth-grade').value;
+      doRegister(name, email, password, grade);
+    }
+  });
+  const sw = document.getElementById('auth-switch');
+  if(sw) sw.addEventListener('click',(e)=>{ e.preventDefault(); authModal = authModal==='login'?'register':'login'; authError=''; renderModalLayer(); });
+}
+function genericModalHtml(){
+  return `<div class="modal-bg" data-close="generic"><div class="card modal" style="position:relative">
+    <button class="close-x" data-close="generic">✕</button>
+    <h2>${genericModal.title}</h2>
+    ${genericModal.bodyHtml}
+  </div></div>`;
+}
+function openGenericModal(title, bodyHtml, onMount){
+  genericModal = {title, bodyHtml};
+  renderModalLayer();
+  const holder = document.getElementById('modal-layer');
+  holder.querySelectorAll('[data-close="generic"]').forEach(el=>el.addEventListener('click',(e)=>{ if(e.target===el) closeGenericModal(); }));
+  if(onMount) onMount();
+}
+function closeGenericModal(){ genericModal=null; renderModalLayer(); }
+
+/* ========================= NAV / LAYOUT ========================= */
+function navItems(){
+  const items = [
+    ['home','nav_home'],['explore','nav_explore'],['match','nav_match'],['mentors','nav_mentors'],
+    ['glossary','nav_glossary'],['calendar','nav_calendar'],['temirtau','nav_temirtau'],['myzharyk','nav_myzharyk']
+  ];
+  const u = currentUser();
+  if(u && u.role==='admin') items.push(['admin','nav_admin']);
+  return items;
+}
+function renderTopbar(){
+  const u = currentUser();
+  return `<div class="topbar"><div class="topbar-inner">
+    <a href="#/home" class="logo"><span class="dot"></span>${t('app_name')}</a>
+    <nav class="mainnav">
+      ${navItems().map(([r,label])=>`<button data-nav="${r}" class="${route.name===r?'active':''}">${t(label)}</button>`).join('')}
+    </nav>
+    <div class="topright">
+      <div class="langtoggle">
+        <button data-lang="ru" class="${LANG==='ru'?'active':''}">RU</button>
+        <button data-lang="kz" class="${LANG==='kz'?'active':''}">KZ</button>
+      </div>
+      ${u ? `<span class="mini" style="margin-right:2px;">${u.name}${u.role==='admin'?' 👑':''}</span><button class="btn btn-ghost btn-sm" id="logout-btn">${t('logout')}</button>`
+          : `<button class="btn btn-outline btn-sm" id="login-btn">${t('login')}</button>`}
+    </div>
+  </div></div>`;
+}
+function bindTopbarEvents(){
+  document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click', ()=>go(b.dataset.nav)));
+  document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click', ()=>{ LANG=b.dataset.lang; render(); }));
+  const lb = document.getElementById('login-btn'); if(lb) lb.addEventListener('click', ()=>openAuth('login'));
+  const lo = document.getElementById('logout-btn'); if(lo) lo.addEventListener('click', doLogout);
+}
+
+/* ========================= HELPERS ========================= */
+function catLabel(c){ return t('cat_'+c); }
+function fmtLabel(f){ return t('fmt_'+f); }
+function costLabel(c){
+  if(c==='Free') return t('free');
+  if(c==='Paid') return t('paid');
+  if(c==='Partial') return t('partial');
+  return c;
+}
+function formatDate(d){
+  if(!d) return '-';
+  try{ const dt = new Date(d); return dt.toLocaleDateString(LANG==='ru'?'ru-RU':'kk-KZ',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return d; }
+}
+function isSaved(oppId){ const u=currentUser(); if(!u) return false; return (ensureUserData(u.id).saved||[]).includes(oppId); }
+function toggleSave(oppId){
+  if(!requireAuth()) return;
+  const u = currentUser(); const ud = ensureUserData(u.id);
+  ud.saved = ud.saved||[];
+  const idx = ud.saved.indexOf(oppId);
+  if(idx>-1){ ud.saved.splice(idx,1); }
+  else{ ud.saved.push(oppId); if(!ud.tracker[oppId]) ud.tracker[oppId]='Saved'; }
+  saveDB(); render();
+}
+
+function oppCardHtml(o){
+  const saved = isSaved(o.id);
+  return `<div class="card opp-card">
+    <button class="save-btn ${saved?'saved':''}" data-save="${o.id}">${saved?'★':'☆'}</button>
+    <div class="pill">${catLabel(o.category)}</div>
+    <div class="opp-title">${escapeHtml(o.title)}</div>
+    <div class="opp-meta">
+      <span>📅 ${formatDate(o.deadline)}</span>
+      <span>🎓 ${(o.grades||[]).join(', ')}</span>
+      <span>${o.format==='online'?'💻':o.format==='offline'?'📍':'🔀'} ${fmtLabel(o.format)}</span>
+    </div>
+    <div class="opp-badges">
+      <span class="pill pill-lemon">${costLabel(o.cost)}</span>
+      ${(o.badges||[]).map(b=>`<span class="pill pill-muted">${b}</span>`).join('')}
+    </div>
+    <button class="btn btn-outline btn-sm" style="margin-top:6px;" data-view="${o.id}">${t('view_details')}</button>
+  </div>`;
+}
+function escapeHtml(s){ if(s===undefined||s===null) return ''; return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function bindOppCardEvents(root){
+  root.querySelectorAll('[data-save]').forEach(b=>b.addEventListener('click',(e)=>{ e.stopPropagation(); toggleSave(b.dataset.save); }));
+  root.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>go('opportunity',{id:b.dataset.view})));
+}
+
+/* ========================= PAGES ========================= */
+function pageHome(){
+  const approvedCount = DB.opportunities.filter(o=>o.status==='approved').length;
+  return `
+  <div class="hero"><div class="wrap">
+    <h1>${t('hero_title')}</h1>
+    <p>${t('hero_sub')}</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;">
+      <button class="btn btn-primary" data-nav="explore">${t('find_opportunities')}</button>
+      <button class="btn btn-lemon" data-nav="mentors">${t('find_mentor')}</button>
+    </div>
+    <div class="steps">
+      ${[['1',t('step_find'),t('step_find_d')],['2',t('step_understand'),t('step_understand_d')],['3',t('step_connect'),t('step_connect_d')],['4',t('step_apply'),t('step_apply_d')]]
+        .map(([n,title,d])=>`<div class="card step-card"><div class="step-num">${n}</div><div style="font-weight:800;margin-bottom:4px;">${title}</div><div class="mini">${d}</div></div>`).join('')}
+    </div>
+  </div></div>
+  <div class="section wrap">
+    <div class="card" style="padding:26px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(120deg,var(--card),var(--lilac) 180%);">
+      <div>
+        <div style="font-weight:800;font-size:20px;">${t('temirtau_block_title')}</div>
+        <div class="mini" style="margin-top:4px;">${t('temirtau_block_d')} · ${approvedCount} ${t('opportunities_label').toLowerCase()}</div>
+      </div>
+      <button class="btn btn-outline" data-nav="temirtau">${t('view_details')}</button>
+    </div>
+  </div>`;
+}
+
+let exploreState = {search:'', grade:'', category:'', cost:'', format:''};
+function pageExplore(){
+  const list = DB.opportunities.filter(o=>o.status==='approved').filter(o=>{
+    if(exploreState.search && !o.title.toLowerCase().includes(exploreState.search.toLowerCase())) return false;
+    if(exploreState.grade && !(o.grades||[]).includes(exploreState.grade)) return false;
+    if(exploreState.category && o.category!==exploreState.category) return false;
+    if(exploreState.cost && o.cost!==exploreState.cost) return false;
+    if(exploreState.format && o.format!==exploreState.format) return false;
+    return true;
+  });
+  return `<div class="wrap section">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;">
+      <div><div class="page-title">${t('explore_title')}</div><div class="page-sub">${t('explore_sub')}</div></div>
+      <button class="btn btn-primary" id="add-opp-btn">＋ ${t('add_opportunity')}</button>
+    </div>
+    <div class="filters">
+      <input type="search" id="f-search" placeholder="${t('search_placeholder')}" value="${escapeHtml(exploreState.search)}" style="flex:1;min-width:180px;">
+      <select id="f-grade"><option value="">${t('filter_grade')}: ${t('all')}</option>${GRADES.map(g=>`<option value="${g}" ${exploreState.grade===g?'selected':''}>${g}</option>`).join('')}</select>
+      <select id="f-category"><option value="">${t('filter_category')}: ${t('all')}</option>${CATEGORIES.map(c=>`<option value="${c}" ${exploreState.category===c?'selected':''}>${catLabel(c)}</option>`).join('')}</select>
+      <select id="f-cost"><option value="">${t('filter_cost')}: ${t('all')}</option><option value="Free" ${exploreState.cost==='Free'?'selected':''}>${t('free')}</option><option value="Paid" ${exploreState.cost==='Paid'?'selected':''}>${t('paid')}</option><option value="Partial" ${exploreState.cost==='Partial'?'selected':''}>${t('partial')}</option></select>
+      <select id="f-format"><option value="">${t('filter_format')}: ${t('all')}</option>${FORMATS.map(f=>`<option value="${f}" ${exploreState.format===f?'selected':''}>${fmtLabel(f)}</option>`).join('')}</select>
+    </div>
+    ${list.length? `<div class="grid-cards">${list.map(oppCardHtml).join('')}</div>` : `<div class="empty-state">${t('no_results')}</div>`}
+  </div>`;
+}
+function bindExploreEvents(){
+  const s = document.getElementById('f-search'); if(s) s.addEventListener('input', ()=>{ exploreState.search=s.value; renderBody(); });
+  ['grade','category','cost','format'].forEach(k=>{
+    const el = document.getElementById('f-'+k); if(el) el.addEventListener('change', ()=>{ exploreState[k]=el.value; renderBody(); });
+  });
+  const addBtn = document.getElementById('add-opp-btn');
+  if(addBtn) addBtn.addEventListener('click', ()=>{ if(requireAuth()) openAddOpportunityModal(); });
+}
+
+function pageOpportunity(){
+  const o = DB.opportunities.find(x=>x.id===route.params.id);
+  if(!o) return `<div class="wrap section empty-state">Not found. <button class="btn btn-outline" data-nav="explore">${t('explore_title')}</button></div>`;
+  const saved = isSaved(o.id);
+  return `<div class="wrap section">
+    <button class="btn btn-ghost btn-sm" data-nav="explore">← ${t('explore_title')}</button>
+    <div class="card" style="padding:28px;margin-top:16px;">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div class="pill">${catLabel(o.category)}</div>
+          <h1 style="margin:10px 0 6px;">${escapeHtml(o.title)}</h1>
+          <div class="opp-meta">
+            <span>📅 ${t('deadline')}: ${formatDate(o.deadline)}</span>
+            <span>🎓 ${t('grades_label')}: ${(o.grades||[]).join(', ')}</span>
+            <span>${fmtLabel(o.format)}</span>
+            <span>${costLabel(o.cost)}</span>
+          </div>
+        </div>
+        <button class="btn ${saved?'btn-lemon':'btn-outline'}" data-save="${o.id}">${saved?'★ '+t('saved'):'☆ '+t('save')}</button>
+      </div>
+      <p style="margin-top:18px;line-height:1.6;">${escapeHtml(o.description||'')}</p>
+      <div class="form-grid" style="margin-top:10px;">
+        <div><b>${t('opp_organizer')}:</b> ${escapeHtml(o.organizer||'-')}</div>
+        <div><b>${t('opp_location')}:</b> ${escapeHtml(o.location||'-')}</div>
+        <div><b>${t('opp_english')}:</b> ${o.englishLevel? t('q_english').replace('?','')+': '+o.englishLevel : '-'}</div>
+        <div><b>${t('opp_website')}:</b> ${o.website? `<a href="${o.website}" target="_blank" style="color:var(--accent-dark);text-decoration:underline;">${o.website}</a>`:'-'}</div>
+      </div>
+      <div style="margin-top:16px;"><b>${t('opp_requirements')}</b><div class="reqbox">${escapeHtml(o.requirements||'-')}</div></div>
+      ${o.steps && o.steps.length? `<div style="margin-top:16px;"><b>${t('opp_steps')}</b><ol>${o.steps.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ol></div>`:''}
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;">
+        <button class="btn btn-primary" data-nav="mentors">${t('find_mentor')}</button>
+        <button class="btn btn-outline" data-nav="glossary">${t('view_glossary')}</button>
+        <button class="btn btn-ghost" id="add-tracker-btn" data-opp="${o.id}">＋ ${t('tab_tracker')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function bindOpportunityEvents(){
+  const t1 = document.getElementById('add-tracker-btn');
+  if(t1) t1.addEventListener('click', ()=>{
+    if(!requireAuth()) return;
+    const u = currentUser(); const ud = ensureUserData(u.id);
+    ud.tracker[t1.dataset.opp] = ud.tracker[t1.dataset.opp] || 'Saved';
+    if(!ud.saved.includes(t1.dataset.opp)) ud.saved.push(t1.dataset.opp);
+    saveDB(); showToast(t('applied_to_tracker'));
+  });
+}
+
+/* ---- Match quiz ---- */
+let matchState = {grade:'9', interests:[], english:'beginner', format:'', budget:'any', results:null};
+function pageMatch(){
+  return `<div class="wrap section">
+    <div class="page-title">${t('match_title')}</div>
+    <div class="page-sub">${t('match_sub')}</div>
+    <div class="card" style="padding:24px;margin-top:16px;">
+      <div class="field"><label>${t('q_grade')}</label>
+        <select id="mq-grade">${GRADES.map(g=>`<option value="${g}" ${matchState.grade===g?'selected':''}>${g}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>${t('q_interests')}</label>
+        <div class="tag-row">${CATEGORIES.map(c=>`<label style="display:flex;align-items:center;gap:5px;background:var(--border);padding:6px 10px;border-radius:10px;font-size:13px;">
+          <input type="checkbox" value="${c}" class="mq-interest" ${matchState.interests.includes(c)?'checked':''}> ${catLabel(c)}</label>`).join('')}</div>
+      </div>
+      <div class="field"><label>${t('q_english')}</label>
+        <select id="mq-english">${ENGLISH_LEVELS.map(l=>`<option value="${l}" ${matchState.english===l?'selected':''}>${l}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>${t('q_type')}</label>
+        <select id="mq-format"><option value="">${t('all')}</option>${FORMATS.map(f=>`<option value="${f}" ${matchState.format===f?'selected':''}>${fmtLabel(f)}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>${t('q_budget')}</label>
+        <select id="mq-budget">
+          <option value="free" ${matchState.budget==='free'?'selected':''}>${t('budget_free')}</option>
+          <option value="low" ${matchState.budget==='low'?'selected':''}>${t('budget_low')}</option>
+          <option value="any" ${matchState.budget==='any'?'selected':''}>${t('budget_any')}</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="mq-submit" style="width:100%;justify-content:center;">${t('get_matches')}</button>
+    </div>
+    ${matchState.results? `<div style="margin-top:26px;"><div class="page-title" style="font-size:20px;">${t('match_result_title')}</div>
+      <div class="grid-cards">${matchState.results.map(r=>matchCardHtml(r)).join('')}</div></div>` : ''}
+  </div>`;
+}
+const ENG_RANK = {none:0, beginner:1, intermediate:2, advanced:3};
+function computeMatches(){
+  const englishRank = ENG_RANK[matchState.english] ?? 0;
+  const scored = DB.opportunities.filter(o=>o.status==='approved').map(o=>{
+    let score=0; let reasons=[];
+    if((o.grades||[]).includes(matchState.grade)){ score+=30; reasons.push(LANG==='ru'?'подходит по классу':'сыныпқа сай'); }
+    if(matchState.interests.length && matchState.interests.includes(o.category)){ score+=30; reasons.push(LANG==='ru'?'совпадает с интересами':'қызығушылыққа сай'); }
+    else if(!matchState.interests.length){ score+=10; }
+    const oppEngRank = ENG_RANK[o.englishLevel] ?? 0;
+    if(oppEngRank<=englishRank){ score+=15; reasons.push(LANG==='ru'?'уровень английского подходит':'ағылшын деңгейі сәйкес'); }
+    else{ score-=10; }
+    if(matchState.format && o.format===matchState.format){ score+=15; reasons.push(LANG==='ru'?'нужный формат':'қажетті формат'); }
+    else if(!matchState.format){ score+=5; }
+    if(matchState.budget==='free' && o.cost==='Free'){ score+=10; reasons.push(LANG==='ru'?'бесплатно':'тегін'); }
+    else if(matchState.budget==='free' && o.cost!=='Free'){ score-=25; }
+    else if(matchState.budget==='low' && o.cost!=='Paid'){ score+=8; }
+    score = Math.max(0, Math.min(100, score+10));
+    return {o, score, reasons};
+  }).sort((a,b)=>b.score-a.score).slice(0,5);
+  return scored;
+}
+function matchCardHtml(r){
+  return `<div class="card match-card">
+    <div class="pill">${catLabel(r.o.category)}</div>
+    <div class="opp-title">${escapeHtml(r.o.title)}</div>
+    <div class="match-pct">${r.score}% <span style="font-size:12px;color:var(--muted);font-weight:600;">${t('match_pct')}</span></div>
+    <div class="progressbar"><div class="progressbar-fill" style="width:${r.score}%;"></div></div>
+    <div class="mini">${t('why_match')}: ${r.reasons.join(', ')||'-'}</div>
+    <button class="btn btn-outline btn-sm" data-view="${r.o.id}">${t('view_details')}</button>
+  </div>`;
+}
+function bindMatchEvents(){
+  const g = document.getElementById('mq-grade'); if(g) g.addEventListener('change',()=>matchState.grade=g.value);
+  document.querySelectorAll('.mq-interest').forEach(cb=>cb.addEventListener('change',()=>{
+    matchState.interests = Array.from(document.querySelectorAll('.mq-interest:checked')).map(c=>c.value);
+  }));
+  const e = document.getElementById('mq-english'); if(e) e.addEventListener('change',()=>matchState.english=e.value);
+  const f = document.getElementById('mq-format'); if(f) f.addEventListener('change',()=>matchState.format=f.value);
+  const b = document.getElementById('mq-budget'); if(b) b.addEventListener('change',()=>matchState.budget=b.value);
+  const sub = document.getElementById('mq-submit'); if(sub) sub.addEventListener('click', ()=>{ matchState.results = computeMatches(); renderBody(); });
+  document.querySelectorAll('[data-view]').forEach(bb=>bb.addEventListener('click',()=>go('opportunity',{id:bb.dataset.view})));
+}
+
+/* ---- Mentors ---- */
+let mentorFilter = '';
+function pageMentors(){
+  const list = DB.mentors.filter(m=> !mentorFilter || m.expertise.includes(mentorFilter));
+  return `<div class="wrap section">
+    <div class="page-title">${t('mentors_title')}</div><div class="page-sub">${t('mentors_sub')}</div>
+    <div class="filters">
+      <select id="mentor-filter"><option value="">${t('expertise_label')}: ${t('all')}</option>
+        ${Object.keys(EXPERTISE_LABELS.ru).map(k=>`<option value="${k}" ${mentorFilter===k?'selected':''}>${EXPERTISE_LABELS[LANG][k]}</option>`).join('')}
+      </select>
+    </div>
+    <div class="grid-cards">${list.map(m=>`
+      <div class="card mentor-card">
+        <div class="avatar">${m.name.split(' ').map(p=>p[0]).join('').slice(0,2)}</div>
+        <div style="font-weight:800;">${escapeHtml(m.name)}</div>
+        <div class="tag-row" style="justify-content:center;">${m.expertise.map(e=>`<span class="pill pill-muted">${EXPERTISE_LABELS[LANG][e]}</span>`).join('')}</div>
+        <p class="mini" style="margin-top:8px;">${escapeHtml(LANG==='ru'? m.bio_ru : m.bio_kz)}</p>
+        <button class="btn btn-primary btn-sm" data-request="${m.id}">${t('request_mentorship')}</button>
+      </div>`).join('')}</div>
+  </div>`;
+}
+function bindMentorsEvents(){
+  const f = document.getElementById('mentor-filter'); if(f) f.addEventListener('change',()=>{ mentorFilter=f.value; renderBody(); });
+  document.querySelectorAll('[data-request]').forEach(b=>b.addEventListener('click', ()=>{
+    if(!requireAuth()) return;
+    const mentorId = b.dataset.request;
+    const mentor = DB.mentors.find(m=>m.id===mentorId);
+    openGenericModal(t('request_mentorship')+' — '+mentor.name,
+      `<div class="field"><label>${t('your_message')}</label><textarea id="mentor-msg" rows="4"></textarea></div>
+       <button class="btn btn-primary" id="mentor-send" style="width:100%;justify-content:center;">${t('send_request')}</button>`,
+      ()=>{
+        document.getElementById('mentor-send').addEventListener('click', ()=>{
+          const msg = document.getElementById('mentor-msg').value;
+          DB.mentorRequests.push({id:uid('mr'), userId:currentUser().id, mentorId, message:msg, status:'pending', createdAt:Date.now()});
+          saveDB(); closeGenericModal(); showToast(t('request_sent'));
+        });
+      });
+  }));
+}
+
+/* ---- Glossary ---- */
+let glossarySearch = '';
+function pageGlossary(){
+  const terms = Object.entries(t('glossary_terms')).filter(([k,v])=> !glossarySearch || v[0].toLowerCase().includes(glossarySearch.toLowerCase()) || k.includes(glossarySearch.toLowerCase()));
+  return `<div class="wrap section">
+    <div class="page-title">${t('glossary_title')}</div><div class="page-sub">${t('glossary_sub')}</div>
+    <input type="search" id="gloss-search" placeholder="${t('search_placeholder')}" value="${escapeHtml(glossarySearch)}" style="width:100%;max-width:340px;margin-top:10px;">
+    <div style="margin-top:18px;max-width:720px;">
+      ${terms.map(([k,v])=>`<div class="card glossary-term"><h4>${v[0]}</h4><p>${v[1]}</p><p style="font-style:italic;">${t('example_label')}: ${v[2].replace(/^Пример: |^Мысалы: /,'')}</p></div>`).join('')}
+    </div>
+  </div>`;
+}
+function bindGlossaryEvents(){
+  const s = document.getElementById('gloss-search'); if(s) s.addEventListener('input', ()=>{ glossarySearch=s.value; renderBody(); });
+}
+
+/* ---- Calendar ---- */
+function pageCalendar(){
+  const list = DB.opportunities.filter(o=>o.status==='approved').slice().sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
+  return `<div class="wrap section">
+    <div class="page-title">${t('calendar_title')}</div><div class="page-sub">${t('calendar_sub')}</div>
+    <div class="card" style="margin-top:16px;">
+      ${list.map(o=>`<div class="deadline-row"><div>
+          <div style="font-weight:700;">${escapeHtml(o.title)}</div>
+          <div class="mini">${catLabel(o.category)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="pill">${formatDate(o.deadline)}</span>
+          <button class="btn btn-outline btn-sm" data-view="${o.id}">${t('view_details')}</button>
+        </div></div>`).join('')}
+    </div>
+  </div>`;
+}
+function bindCalendarEvents(){
+  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>go('opportunity',{id:b.dataset.view})));
+}
+
+/* ---- Temirtau ---- */
+function pageTemirtau(){
+  return `<div class="wrap section">
+    <div class="card" style="padding:30px;background:linear-gradient(120deg,var(--lilac),var(--card) 120%);">
+      <div class="page-title">${t('temirtau_title')}</div>
+      <p style="max-width:640px;">${t('temirtau_desc')}</p>
+      <div class="proto-badge">${t('prototype_data')}</div>
+      <div class="stat-grid">
+        <div class="card stat-box"><div class="stat-num">312</div><div class="mini">${t('students_label')}</div></div>
+        <div class="card stat-box"><div class="stat-num">18</div><div class="mini">${t('mentors_label')}</div></div>
+        <div class="card stat-box"><div class="stat-num">${DB.opportunities.filter(o=>o.status==='approved').length}</div><div class="mini">${t('opportunities_label')}</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- My Zharyk ---- */
+let myzharykTab = 'saved';
+function pageMyZharyk(){
+  if(!currentUser()) return `<div class="wrap section empty-state">${t('login_required')} <br><button class="btn btn-primary" style="margin-top:12px;" id="mz-login">${t('login')}</button></div>`;
+  const u = currentUser(); const ud = ensureUserData(u.id);
+  const savedOpps = (ud.saved||[]).map(id=>DB.opportunities.find(o=>o.id===id)).filter(Boolean);
+  const myRequests = DB.mentorRequests.filter(r=>r.userId===u.id);
+  const mySubmissions = DB.submissions.filter(s=>s.userId===u.id);
+  const trackerEntries = Object.entries(ud.tracker||{}).map(([oppId,status])=>({opp:DB.opportunities.find(o=>o.id===oppId),status,oppId})).filter(x=>x.opp);
+
+  let body = '';
+  if(myzharykTab==='saved'){
+    body = savedOpps.length? `<div class="grid-cards">${savedOpps.map(oppCardHtml).join('')}</div>` : `<div class="empty-state">${t('no_saved')}</div>`;
+  } else if(myzharykTab==='requests'){
+    body = myRequests.length? `<div class="card">${myRequests.map(r=>{
+      const m = DB.mentors.find(x=>x.id===r.mentorId);
+      return `<div class="deadline-row"><div><div style="font-weight:700;">${m?m.name:'-'}</div><div class="mini">${escapeHtml(r.message||'')}</div></div><span class="status-tag status-${r.status}">${t('status_'+r.status)}</span></div>`;
+    }).join('')}</div>` : `<div class="empty-state">${t('no_requests')}</div>`;
+  } else if(myzharykTab==='submissions'){
+    body = mySubmissions.length? `<div class="card">${mySubmissions.map(s=>`<div class="deadline-row"><div>
+          <div style="font-weight:700;">${escapeHtml(s.draft.title||'-')}</div>
+          <div class="mini">${s.sourceUrl? '🔗 '+s.sourceUrl : (LANG==='ru'?'Добавлено вручную':'Қолмен қосылды')}</div>
+          ${s.status==='rejected' && s.rejectionReason? `<div class="mini" style="color:var(--danger);">${t('rejection_reason')}: ${escapeHtml(s.rejectionReason)}</div>`:''}
+        </div><span class="status-tag status-${s.status}">${t('status_'+s.status)}</span></div>`).join('')}</div>` : `<div class="empty-state">${t('no_submissions')}</div>`;
+  } else if(myzharykTab==='tracker'){
+    body = trackerEntries.length? `<div class="card">${trackerEntries.map(e=>`<div class="deadline-row"><div>
+          <div style="font-weight:700;">${escapeHtml(e.opp.title)}</div>
+          <div class="mini">${formatDate(e.opp.deadline)}</div>
+        </div>
+        <select class="tracker-status-select" data-opp="${e.oppId}">
+          ${['Saved','Preparing','Applied','Accepted','Rejected'].map(s=>`<option value="${s}" ${e.status===s?'selected':''}>${t('status_'+s)}</option>`).join('')}
+        </select>
+        </div>`).join('')}</div>` : `<div class="empty-state">${t('no_tracker')}</div>`;
+  }
+
+  return `<div class="wrap section">
+    <div class="page-title">${t('myzharyk_title')}</div>
+    <div class="tabbar">
+      <button data-tab="saved" class="${myzharykTab==='saved'?'active':''}">${t('tab_saved')}</button>
+      <button data-tab="requests" class="${myzharykTab==='requests'?'active':''}">${t('tab_requests')}</button>
+      <button data-tab="submissions" class="${myzharykTab==='submissions'?'active':''}">${t('tab_submissions')}</button>
+      <button data-tab="tracker" class="${myzharykTab==='tracker'?'active':''}">${t('tab_tracker')}</button>
+    </div>
+    ${body}
+  </div>`;
+}
+function bindMyZharykEvents(){
+  const lb = document.getElementById('mz-login'); if(lb) lb.addEventListener('click',()=>openAuth('login'));
+  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{ myzharykTab=b.dataset.tab; renderBody(); }));
+  bindOppCardEvents(document);
+  document.querySelectorAll('.tracker-status-select').forEach(sel=>sel.addEventListener('change',()=>{
+    const u = currentUser(); const ud = ensureUserData(u.id);
+    ud.tracker[sel.dataset.opp] = sel.value; saveDB();
+  }));
+}
+
+/* ---- Add Opportunity (modal-driven, manual + link) ---- */
+let addOppState = {mode:'manual', draft:null, sourceUrl:'', pastedText:'', extracting:false, extractError:false};
+function blankDraft(){ return {title:'',description:'',organizer:'',deadline:'',category:CATEGORIES[0],grades:[],location:'',format:'online',cost:'Free',scholarship:false,englishLevel:'none',requirements:'',steps:'',website:''}; }
+
+function openAddOpportunityModal(){
+  addOppState = {mode:'manual', draft:blankDraft(), sourceUrl:'', pastedText:'', extracting:false, extractError:false};
+  openGenericModal(t('add_opportunity'), addOppBodyHtml(), bindAddOppEvents);
+}
+function addOppBodyHtml(){
+  return `<div class="linktabs">
+    <button data-mode="manual" class="${addOppState.mode==='manual'?'active':''}">${t('add_manually')}</button>
+    <button data-mode="link" class="${addOppState.mode==='link'?'active':''}">${t('add_by_link')}</button>
+  </div>
+  <div id="add-opp-inner">${addOppState.mode==='link'? addOppLinkHtml() : addOppFormHtml()}</div>`;
+}
+function addOppLinkHtml(){
+  if(!addOppState.draft || addOppState.mode!=='link' || addOppState.showForm!==true){
+    return `<div class="field"><label>${t('link_input')}</label><input type="text" id="link-url" value="${escapeHtml(addOppState.sourceUrl)}" placeholder="https://..."></div>
+    <div class="field"><label>${t('pasted_text')}</label><textarea id="link-text" rows="6" placeholder="...">${escapeHtml(addOppState.pastedText)}</textarea></div>
+    <div class="helper-text">${LANG==='ru'?'Вставь текст статьи/страницы — AI извлечёт данные автоматически.':'Мақала/бет мәтінін қой — AI деректерді автоматты түрде алады.'}</div>
+    ${addOppState.extractError? `<p style="color:var(--danger);font-weight:700;">${t('extract_fail')}</p>`:''}
+    <button class="btn btn-primary" id="extract-btn" style="width:100%;justify-content:center;" ${addOppState.extracting?'disabled':''}>${addOppState.extracting? t('extracting')+'…' : t('extract_info')}</button>`;
+  }
+  return addOppFormHtml();
+}
+function addOppFormHtml(){
+  const d = addOppState.draft || blankDraft();
+  return `<p class="helper-text">${t('review_edit')}</p>
+  <div class="form-grid">
+    <div class="field"><label>${t('title_label')}*</label><input type="text" id="d-title" value="${escapeHtml(d.title)}"></div>
+    <div class="field"><label>${t('opp_organizer')}</label><input type="text" id="d-organizer" value="${escapeHtml(d.organizer)}"></div>
+    <div class="field"><label>${t('deadline')}</label><input type="date" id="d-deadline" value="${d.deadline||''}"></div>
+    <div class="field"><label>${t('category_label')}</label><select id="d-category">${CATEGORIES.map(c=>`<option value="${c}" ${d.category===c?'selected':''}>${catLabel(c)}</option>`).join('')}</select></div>
+    <div class="field"><label>${t('grades_label')}</label>
+      <div class="tag-row">${GRADES.map(g=>`<label style="display:flex;gap:4px;align-items:center;background:var(--border);padding:4px 8px;border-radius:8px;"><input type="checkbox" class="d-grade" value="${g}" ${(d.grades||[]).includes(g)?'checked':''}>${g}</label>`).join('')}</div>
+    </div>
+    <div class="field"><label>${t('opp_location')}</label><input type="text" id="d-location" value="${escapeHtml(d.location)}"></div>
+    <div class="field"><label>${t('format_label')}</label><select id="d-format">${FORMATS.map(f=>`<option value="${f}" ${d.format===f?'selected':''}>${fmtLabel(f)}</option>`).join('')}</select></div>
+    <div class="field"><label>${t('cost_label')}</label><select id="d-cost"><option value="Free" ${d.cost==='Free'?'selected':''}>${t('free')}</option><option value="Paid" ${d.cost==='Paid'?'selected':''}>${t('paid')}</option><option value="Partial" ${d.cost==='Partial'?'selected':''}>${t('partial')}</option></select></div>
+    <div class="field"><label>${t('opp_english')}</label><select id="d-english">${ENGLISH_LEVELS.map(l=>`<option value="${l}" ${d.englishLevel===l?'selected':''}>${l}</option>`).join('')}</select></div>
+    <div class="field"><label>${t('opp_website')}</label><input type="text" id="d-website" value="${escapeHtml(d.website)}"></div>
+  </div>
+  <div class="field"><label>${t('description_label')}</label><textarea id="d-description" rows="3">${escapeHtml(d.description)}</textarea></div>
+  <div class="field"><label>${t('opp_requirements')}</label><textarea id="d-requirements" rows="2">${escapeHtml(d.requirements)}</textarea></div>
+  <div class="field"><label>${t('opp_steps')} (${LANG==='ru'?'по одному на строку':'әр жолда біреуден'})</label><textarea id="d-steps" rows="3">${escapeHtml(Array.isArray(d.steps)? d.steps.join('\\n') : (d.steps||''))}</textarea></div>
+  <button class="btn btn-primary" id="submit-draft-btn" style="width:100%;justify-content:center;">${t('submit_for_review')}</button>`;
+}
+function readDraftFromForm(){
+  const grades = Array.from(document.querySelectorAll('.d-grade:checked')).map(c=>c.value);
+  return {
+    title: document.getElementById('d-title').value.trim(),
+    organizer: document.getElementById('d-organizer').value.trim(),
+    deadline: document.getElementById('d-deadline').value,
+    category: document.getElementById('d-category').value,
+    grades,
+    location: document.getElementById('d-location').value.trim(),
+    format: document.getElementById('d-format').value,
+    cost: document.getElementById('d-cost').value,
+    englishLevel: document.getElementById('d-english').value,
+    website: document.getElementById('d-website').value.trim(),
+    description: document.getElementById('d-description').value.trim(),
+    requirements: document.getElementById('d-requirements').value.trim(),
+    steps: document.getElementById('d-steps').value.split('\\n').map(s=>s.trim()).filter(Boolean)
+  };
+}
+function bindAddOppEvents(){
+  const holder = document.getElementById('modal-layer');
+  holder.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click', ()=>{
+    addOppState.mode = b.dataset.mode; addOppState.showForm=false;
+    if(addOppState.mode==='manual') addOppState.draft = addOppState.draft && addOppState.draft.title!==undefined ? addOppState.draft : blankDraft();
+    refreshAddOppInner();
+  }));
+  wireAddOppInner();
+}
+function refreshAddOppInner(){
+  document.getElementById('add-opp-inner').innerHTML = addOppState.mode==='link' ? addOppLinkHtml() : addOppFormHtml();
+  document.querySelectorAll('.linktabs button').forEach(b=>b.classList.toggle('active', b.dataset.mode===addOppState.mode));
+  wireAddOppInner();
+}
+function wireAddOppInner(){
+  const extractBtn = document.getElementById('extract-btn');
+  if(extractBtn) extractBtn.addEventListener('click', async ()=>{
+    addOppState.sourceUrl = document.getElementById('link-url').value.trim();
+    addOppState.pastedText = document.getElementById('link-text').value.trim();
+    if(!addOppState.pastedText){ addOppState.extractError=true; refreshAddOppInner(); return; }
+    addOppState.extracting = true; addOppState.extractError=false; refreshAddOppInner();
+    try{
+      const draft = await extractWithAI(addOppState.sourceUrl, addOppState.pastedText);
+      addOppState.draft = draft; addOppState.extracting=false; addOppState.showForm=true; refreshAddOppInner();
+    }catch(e){
+      console.error(e);
+      addOppState.extracting=false; addOppState.extractError=true; refreshAddOppInner();
+    }
+  });
+  const submitBtn = document.getElementById('submit-draft-btn');
+  if(submitBtn) submitBtn.addEventListener('click', ()=>{
+    const draft = readDraftFromForm();
+    if(!draft.title){ showToast(t('fill_required')); return; }
+    const u = currentUser();
+    DB.submissions.push({id:uid('sub'), userId:u.id, draft, sourceUrl: addOppState.mode==='link'? addOppState.sourceUrl : null, status:'pending', rejectionReason:'', createdAt:Date.now()});
+    saveDB();
+    closeGenericModal();
+    showToast(LANG==='ru'?'Отправлено на модерацию!':'Модерацияға жіберілді!');
+  });
+}
+
+async function extractWithAI(url, pageText){
+  const categoriesHint = CATEGORIES.join(', ');
+  const sys = `Extract structured info about an educational/extracurricular opportunity for teenagers from the given page text. Respond ONLY with a raw JSON object, no markdown fences, no commentary, matching exactly this shape:
+{"title":"","description":"","organizer":"","deadline":"YYYY-MM-DD or empty","category":"one of: ${categoriesHint}","grades":["8","9","10","11"],"location":"","format":"online|offline|hybrid","cost":"Free|Paid|Partial","scholarship":true,"englishLevel":"none|beginner|intermediate|advanced","requirements":"","steps":["step1","step2"],"website":""}
+If a field is unknown, use an empty string, empty array, or a reasonable default. Never include text outside the JSON object.`;
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      model:"claude-sonnet-4-6",
+      max_tokens:1000,
+      system: sys,
+      messages:[{role:"user", content:`Source URL: ${url}\n\nPage text:\n${pageText.slice(0,8000)}`}]
+    })
+  });
+  if(!res.ok) throw new Error('API error '+res.status);
+  const data = await res.json();
+  const textBlock = (data.content||[]).find(c=>c.type==='text');
+  if(!textBlock) throw new Error('No text in response');
+  let clean = textBlock.text.trim().replace(/^```json/,'').replace(/^```/,'').replace(/```$/,'').trim();
+  const parsed = JSON.parse(clean);
+  if(!parsed.title) throw new Error('Empty extraction');
+  if(!CATEGORIES.includes(parsed.category)) parsed.category = CATEGORIES[0];
+  if(!Array.isArray(parsed.grades)) parsed.grades = [];
+  if(!Array.isArray(parsed.steps)) parsed.steps = [];
+  if(!FORMATS.includes(parsed.format)) parsed.format = 'online';
+  if(!['Free','Paid','Partial'].includes(parsed.cost)) parsed.cost='Free';
+  if(!ENGLISH_LEVELS.includes(parsed.englishLevel)) parsed.englishLevel='none';
+  return parsed;
+}
+
+/* ---- Admin ---- */
+let adminTab = 'pending';
+function pageAdmin(){
+  const u = currentUser();
+  if(!u) return `<div class="wrap section empty-state">${t('login_required')}</div>`;
+  if(u.role!=='admin') return `<div class="wrap section empty-state">${t('admin_only')}</div>`;
+  const subs = DB.submissions;
+  const counts = {
+    pending: subs.filter(s=>s.status==='pending').length,
+    approved: subs.filter(s=>s.status==='approved').length,
+    rejected: subs.filter(s=>s.status==='rejected').length,
+    total: subs.length
+  };
+  const list = subs.filter(s=>s.status===adminTab || adminTab==='all').slice().sort((a,b)=>b.createdAt-a.createdAt);
+  return `<div class="wrap section">
+    <div class="page-title">${t('admin_title')}</div><div class="page-sub">${t('admin_sub')}</div>
+    <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="card stat-box"><div class="stat-num">${counts.pending}</div><div class="mini">${t('pending')}</div></div>
+      <div class="card stat-box"><div class="stat-num">${counts.approved}</div><div class="mini">${t('approved')}</div></div>
+      <div class="card stat-box"><div class="stat-num">${counts.rejected}</div><div class="mini">${t('rejected')}</div></div>
+      <div class="card stat-box"><div class="stat-num">${counts.total}</div><div class="mini">${t('total')}</div></div>
+    </div>
+    <div class="tabbar">
+      ${['pending','approved','rejected','all'].map(k=>`<button data-atab="${k}" class="${adminTab===k?'active':''}">${k==='all'? t('all') : t(k)}</button>`).join('')}
+    </div>
+    ${list.length? `<div class="scroll-x"><table class="admin-table"><thead><tr>
+      <th>${t('title_label')}</th><th>${t('category_label')}</th><th>${t('submitted_by')}</th><th>${t('source_link')}</th><th>${t('tracker_status')}</th><th></th>
+    </tr></thead><tbody>
+      ${list.map(s=>{
+        const submitter = DB.users[s.userId];
+        return `<tr>
+          <td>${escapeHtml(s.draft.title)}</td>
+          <td>${catLabel(s.draft.category)}</td>
+          <td>${submitter? escapeHtml(submitter.name) : '-'}</td>
+          <td>${s.sourceUrl? `<a href="${s.sourceUrl}" target="_blank" style="color:var(--accent-dark);">🔗</a>` : '-'}</td>
+          <td><span class="status-tag status-${s.status}">${t('status_'+s.status)}</span>${s.status==='rejected'&&s.rejectionReason? `<div class="mini">${escapeHtml(s.rejectionReason)}</div>`:''}</td>
+          <td style="white-space:nowrap;">
+            <button class="btn btn-ghost btn-sm" data-detail="${s.id}">👁</button>
+            ${s.status==='pending'? `<button class="btn btn-success btn-sm" data-approve="${s.id}">${t('approve')}</button>
+            <button class="btn btn-danger btn-sm" data-reject="${s.id}">${t('reject')}</button>` : ''}
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody></table></div>` : `<div class="empty-state">—</div>`}
+  </div>`;
+}
+function bindAdminEvents(){
+  document.querySelectorAll('[data-atab]').forEach(b=>b.addEventListener('click',()=>{ adminTab=b.dataset.atab; renderBody(); }));
+  document.querySelectorAll('[data-approve]').forEach(b=>b.addEventListener('click',()=>{
+    const s = DB.submissions.find(x=>x.id===b.dataset.approve);
+    s.status='approved';
+    DB.opportunities.push(Object.assign({id:uid('op'), status:'approved', sourceUrl:s.sourceUrl, badges:[]}, s.draft));
+    saveDB(); renderBody(); showToast(LANG==='ru'?'Одобрено':'Мақұлданды');
+  }));
+  document.querySelectorAll('[data-reject]').forEach(b=>b.addEventListener('click',()=>{
+    const s = DB.submissions.find(x=>x.id===b.dataset.reject);
+    openGenericModal(t('reject'), `<div class="field"><label>${t('rejection_reason')}</label><textarea id="reject-reason" rows="3" placeholder="${t('reason_placeholder')}"></textarea></div>
+      <button class="btn btn-danger" id="reject-confirm" style="width:100%;justify-content:center;">${t('reject')}</button>`, ()=>{
+        document.getElementById('reject-confirm').addEventListener('click', ()=>{
+          s.status='rejected'; s.rejectionReason = document.getElementById('reject-reason').value;
+          saveDB(); closeGenericModal(); renderBody();
+        });
+      });
+  }));
+  document.querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click',()=>{
+    const s = DB.submissions.find(x=>x.id===b.dataset.detail);
+    const d = s.draft;
+    openGenericModal(d.title, `
+      <div class="mini">${catLabel(d.category)} · ${formatDate(d.deadline)} · ${(d.grades||[]).join(', ')}</div>
+      <p style="margin-top:10px;">${escapeHtml(d.description)}</p>
+      <p><b>${t('opp_requirements')}:</b> ${escapeHtml(d.requirements||'-')}</p>
+      ${d.steps&&d.steps.length? `<b>${t('opp_steps')}:</b><ol>${d.steps.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ol>`:''}
+      <p><b>${t('opp_website')}:</b> ${d.website||'-'}</p>
+      <p><b>${t('source_link')}:</b> ${s.sourceUrl||'-'}</p>
+    `);
+  }));
+}
+
+/* ========================= RENDER ROOT ========================= */
+function pageContent(){
+  switch(route.name){
+    case 'home': return pageHome();
+    case 'explore': return pageExplore();
+    case 'opportunity': return pageOpportunity();
+    case 'match': return pageMatch();
+    case 'mentors': return pageMentors();
+    case 'glossary': return pageGlossary();
+    case 'calendar': return pageCalendar();
+    case 'temirtau': return pageTemirtau();
+    case 'myzharyk': return pageMyZharyk();
+    case 'admin': return pageAdmin();
+    default: return pageHome();
+  }
+}
+function bindPageEvents(){
+  bindOppCardEvents(document);
+  document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click', ()=>go(b.dataset.nav)));
+  switch(route.name){
+    case 'explore': bindExploreEvents(); break;
+    case 'opportunity': bindOpportunityEvents(); break;
+    case 'match': bindMatchEvents(); break;
+    case 'mentors': bindMentorsEvents(); break;
+    case 'glossary': bindGlossaryEvents(); break;
+    case 'calendar': bindCalendarEvents(); break;
+    case 'myzharyk': bindMyZharykEvents(); break;
+    case 'admin': bindAdminEvents(); break;
+  }
+}
+function renderBody(){
+  document.getElementById('page-body').innerHTML = pageContent();
+  bindPageEvents();
+}
+function render(){
+  document.title = t('app_name')+' — '+ (route.name);
+  document.getElementById('root').innerHTML = `
+    ${renderTopbar()}
+    <div id="page-body">${pageContent()}</div>
+    <div class="footer">Zharyk · ${t('demo_note')}</div>
+  `;
+  bindTopbarEvents();
+  bindPageEvents();
+  renderModalLayer();
+}
+
+/* ========================= INIT ========================= */
+async function init(){
+  document.getElementById('root').innerHTML = `<div class="center" style="height:100vh;font-weight:700;">Loading Zharyk<span class="loading-dots"></span></div>`;
+  let loaded = await loadDB();
+  if(!loaded){ loaded = seedDB(); DB = loaded; await saveDB(); }
+  else{ DB = loaded; }
+  Object.keys(DB.users).forEach(id=>ensureUserData(id));
+  SESSION_USER_ID = getSession();
+  if(SESSION_USER_ID && !DB.users[SESSION_USER_ID]) SESSION_USER_ID = null;
+  route = parseHash();
+  render();
+}
+init();
+</script>
+</body>
+</html>
