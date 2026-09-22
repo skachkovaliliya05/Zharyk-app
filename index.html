@@ -188,6 +188,13 @@ table.admin-table th, table.admin-table td{text-align:left;padding:8px 10px;bord
 const SUPABASE_URL = "https://jpzzqucitubpzezvchax.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_2q8B8OLN-Pj4vl04WRDxVQ_-A2JTeUO";
 const SUPABASE_CONFIGURED = !SUPABASE_URL.includes('YOUR-PROJECT') && !SUPABASE_ANON_KEY.includes('YOUR-ANON');
+
+// Prototype admin credentials. The password is visible in client-side code,
+// so replace this with a proper server-side role check before public launch.
+const ADMIN_EMAIL = "skachkovaliliya.05@gmail.com";
+const ADMIN_PASSWORD = "Lgili89.YY";
+function isConfiguredAdminEmail(email){ return String(email||'').trim().toLowerCase() === ADMIN_EMAIL; }
+
 const sb = SUPABASE_CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 /* ========================= DATA ========================= */
@@ -414,6 +421,7 @@ const EXPERTISE_LABELS = {
    didn't need to change. */
 let DB = { users:{}, opportunities:[], submissions:[], mentors:[], mentorRequests:[], posts:[], temirtauStats:{students:0,mentors:0}, userData:{} };
 let SESSION_USER_ID = null;
+let SESSION_USER_EMAIL = null;
 let route = {name:'home', params:{}};
 
 function uid(prefix){ return prefix+'_'+Math.random().toString(36).slice(2,10); }
@@ -486,7 +494,17 @@ function mapProfileFromDb(p){ return {id:p.id, email:p.email, name:p.name, role:
 
 function currentUser(){
   if(!SESSION_USER_ID) return null;
-  return DB.users[SESSION_USER_ID] || null;
+  const profile = DB.users[SESSION_USER_ID] || null;
+  if(profile) {
+    if(isConfiguredAdminEmail(profile.email)) return Object.assign({}, profile, {role:'admin'});
+    return profile;
+  }
+  // If the admin profile row is not available yet, still recognize the
+  // authenticated Supabase account by its email.
+  if(SESSION_USER_EMAIL && isConfiguredAdminEmail(SESSION_USER_EMAIL)){
+    return {id:SESSION_USER_ID, email:SESSION_USER_EMAIL, name:'Admin', role:'admin', grade:null};
+  }
+  return null;
 }
 
 /* ========================= TOAST ========================= */
@@ -522,10 +540,22 @@ function closeAuth(){ authModal = null; renderModalLayer(); }
 
 async function doLogin(email, password){
   if(!sb){ authError = LANG==='ru'?'Supabase не настроен (см. верх файла).':'Supabase бапталмаған.'; renderModalLayer(); return; }
-  const { data, error } = await sb.auth.signInWithPassword({ email: email.trim(), password });
+  const cleanEmail = email.trim().toLowerCase();
+  // The configured admin credentials still authenticate through Supabase;
+  // this condition only grants the admin role to that exact account.
+  const isConfiguredAdmin = cleanEmail === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+  const { data, error } = await sb.auth.signInWithPassword({ email: cleanEmail, password });
+
   if(error){ authError = t('invalid_login'); renderModalLayer(); return; }
   SESSION_USER_ID = data.user.id;
+  SESSION_USER_EMAIL = (data.user.email || cleanEmail || '').toLowerCase();
   await refreshAllData();
+  // Keep the explicit condition above documented and active for the configured admin account.
+  if(isConfiguredAdmin && !isConfiguredAdminEmail(SESSION_USER_EMAIL)){
+    authError = t('invalid_login');
+    renderModalLayer();
+    return;
+  }
   closeAuth();
   render();
   const u = currentUser();
@@ -557,6 +587,7 @@ async function doRegister(name, email, password, grade){
 async function doLogout(){
   if(sb) await sb.auth.signOut();
   SESSION_USER_ID = null;
+  SESSION_USER_EMAIL = null;
   await refreshAllData();
   go('home');
   showToast(LANG==='ru'?'Ты вышел из аккаунта':'Аккаунттан шықтың');
@@ -1627,6 +1658,9 @@ async function init(){
   }
   const { data: sessionData } = await sb.auth.getSession();
   SESSION_USER_ID = sessionData && sessionData.session ? sessionData.session.user.id : null;
+  SESSION_USER_EMAIL = sessionData && sessionData.session && sessionData.session.user
+    ? (sessionData.session.user.email || '').toLowerCase()
+    : null;
   await refreshAllData();
 
   sb.auth.onAuthStateChange((event, session)=>{
